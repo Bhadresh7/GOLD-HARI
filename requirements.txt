@@ -10,3 +10,5 @@ yfinance
 forex-python
 openpyxl
 beautifulsoup4
+plotly
+fpdf2
