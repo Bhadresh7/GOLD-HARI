@@ -77,8 +77,17 @@ def perform_auto_backup():
     from datetime import datetime
     
     # 1. Path Setup
-    backup_dir = "/home/bhadresh/Desktop/backup/excel"
-    os.makedirs(backup_dir, exist_ok=True)
+    backup_base = "/home/bhadresh/Desktop/backup"
+    
+    # Check if we are on the local machine (bhadresh's PC)
+    if not os.path.exists("/home/bhadresh"):
+        return False, "Skipping local backup (Cloud Environment detected)"
+
+    backup_dir = os.path.join(backup_base, "excel")
+    try:
+        os.makedirs(backup_dir, exist_ok=True)
+    except PermissionError:
+        return False, "No permission to write to Desktop (Cloud Environment)"
     today_str = datetime.now().strftime('%d_%m_%Y')
     target_file = os.path.join(backup_dir, f"{today_str}.xlsx")
     
@@ -183,15 +192,16 @@ def generate_receipt_html(loan_data, calculation_data):
         </tr>
     """
     
-    # Store a local copy if running on the host machine
+    # Store a local copy ONLY if running on the local host machine
     import os
-    local_bill_path = f"/home/bhadresh/Desktop/backup/bill/Receipt_{loan_data['receipt_no']}_{loan_data['customer_name'].replace(' ', '_')}.html"
-    try:
-        os.makedirs(os.path.dirname(local_bill_path), exist_ok=True)
-        with open(local_bill_path, "w", encoding="utf-8") as f:
-            f.write(html_content)
-    except Exception as e:
-        print(f"Local bill backup failed: {e}")
+    if os.path.exists("/home/bhadresh"):
+        local_bill_path = f"/home/bhadresh/Desktop/backup/bill/Receipt_{loan_data['receipt_no']}_{loan_data['customer_name'].replace(' ', '_')}.html"
+        try:
+            os.makedirs(os.path.dirname(local_bill_path), exist_ok=True)
+            with open(local_bill_path, "w", encoding="utf-8") as f:
+                f.write(html_content)
+        except Exception:
+            pass # Silently skip on Cloud
         
     return html_content
 
@@ -267,15 +277,16 @@ def generate_pdf_receipt(loan_data, calculation_data):
     
     pdf.set_font("Helvetica", '', 7)
     pdf_content = pdf.output()
-    # Store a local copy on Desktop/backup/bill
+    # Store a local copy on Desktop/backup/bill ONLY if local
     import os
-    local_pdf_path = f"/home/bhadresh/Desktop/backup/bill/Receipt_{loan_data['receipt_no']}.pdf"
-    try:
-        os.makedirs(os.path.dirname(local_pdf_path), exist_ok=True)
-        with open(local_pdf_path, "wb") as f:
-            f.write(bytes(pdf_content))
-    except Exception as e:
-        print(f"Local PDF backup failed: {e}")
+    if os.path.exists("/home/bhadresh"):
+        local_pdf_path = f"/home/bhadresh/Desktop/backup/bill/Receipt_{loan_data['receipt_no']}.pdf"
+        try:
+            os.makedirs(os.path.dirname(local_pdf_path), exist_ok=True)
+            with open(local_pdf_path, "wb") as f:
+                f.write(bytes(pdf_content))
+        except Exception:
+            pass
         
     return bytes(pdf_content)
 
