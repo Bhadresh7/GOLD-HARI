@@ -46,8 +46,8 @@ class Database:
 
     def initialize_users(self):
         # Create default admin if no users exist
-        if self.users.count_documents({}) == 0:
-            self.create_user("admin", "admin123", "admin")
+        if self.users.count_documents({"username": "admin"}) == 0:
+            self.create_user("admin", "yuvan123", "admin")
 
     def create_user(self, username, password, role="user"):
         if self.users.find_one({"username": username}):
