@@ -1,0 +1,13 @@
+streamlit
+pymongo
+dnspython
+pandas
+python-dateutil
+requests
+reportlab
+xhtml2pdf
+yfinance
+forex-python
+openpyxl
+beautifulsoup4
+requests

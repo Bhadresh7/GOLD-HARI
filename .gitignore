@@ -1,0 +1,12 @@
+.venv/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.db
+.ipynb_checkpoints
+.streamlit/
+Ledger_Export.xlsx
+*.xlsx
+Desktop/
+backup/
