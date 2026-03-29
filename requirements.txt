@@ -10,4 +10,3 @@ yfinance
 forex-python
 openpyxl
 beautifulsoup4
-requests
